@@ -1,69 +1,123 @@
+import { useEffect, useState } from 'react'
 import { motion } from 'motion/react'
+import { Compass, Lightbulb, Rocket, TrendingUp, Palette, Code, Gamepad2, Bot, MessagesSquare, ClipboardList, RefreshCw } from 'lucide-react'
+import ServiceCarousel from './components/ServiceCarousel'
+import ActivationAccordion from './components/ActivationAccordion'
+import IndustryTimeline from './components/IndustryTimeline'
+import ProcessScroll from './components/ProcessScroll'
+import ClientMarquee from './components/ClientMarquee'
+import WhyList from './components/WhyList'
+import CtaMarquee from './components/CtaMarquee'
+import FooterHover from './components/FooterHover'
+import GlowMenu from './components/GlowMenu'
+import BeamsBackground from './components/BeamsBackground'
+
 
 const BLUE = '#264d94', GREEN = '#62b65d', CORAL = '#e05f52', YELLOW = '#b9b72a'
 
 const services = [
-  { id: 'digital', c: BLUE, ic: '📈', title: 'Digital Marketing, SEO & Content', tag: 'Get Found by the People Looking for You.',
-    body: ["Being online isn't enough. Your customers need to find you, notice you and have a reason to click.", "We create digital marketing campaigns designed around your business goals — whether that's more leads, sales, enquiries, bookings or brand awareness."],
+  { id: 'digital', c: BLUE, Icon: TrendingUp, title: 'Digital Marketing, SEO & Content', tag: 'Get Found by the People Looking for You.',
+    body: ["Your customers need to find you, notice you and have a reason to click."],
     list: ['Google Ads', 'Meta Ads', 'TikTok Ads', 'SEO', 'Social media management', 'Content creation', 'Campaign strategy'],
-    get: 'More visibility, stronger online presence and marketing focused on business results — not just likes and impressions.', cta: 'Grow Your Online Presence' },
-  { id: 'branding', c: CORAL, ic: '🎨', title: 'Branding, Design & Media Production', tag: 'Look Good. Feel Professional. Be Remembered.',
-    body: ['Your brand is often the first thing people see — and first impressions matter.', 'We create memorable visual identities, packaging, social content, UI/UX designs and videos that help your business look professional and stand out from the crowd.'],
+    get: 'More visibility and marketing built for results, not just likes.', cta: 'Grow Your Online Presence' },
+  { id: 'branding', c: CORAL, Icon: Palette, title: 'Branding, Design & Media Production', tag: 'Look Good. Feel Professional. Be Remembered.',
+    body: ['First impressions matter. We create identities, packaging, content and videos that make you stand out.'],
     list: [],
-    get: 'A consistent brand people can recognize across your website, social media, packaging, advertising and physical spaces.', cta: 'Make My Brand Stand Out' },
-  { id: 'web', c: GREEN, ic: '💻', title: 'Website, Software & E-Commerce', tag: 'Turn Browsers Into Buyers.',
-    body: ["Your website shouldn't just sit there looking pretty.", 'It should help people understand what you offer, trust your business and take the next step.'],
+    get: 'A consistent brand people recognize everywhere.', cta: 'Make My Brand Stand Out' },
+  { id: 'web', c: GREEN, Icon: Code, title: 'Website, Software & E-Commerce', tag: 'Turn Browsers Into Buyers.',
+    body: ['Your website should help people understand, trust and buy from you.'],
     list: ['Business websites', 'E-commerce stores', 'Shopify stores', 'WooCommerce stores', 'Mobile applications', 'Custom web applications', 'React websites', 'Flutter applications'],
-    get: 'Fast, user-friendly digital experiences designed to make it easier for customers to discover, explore and buy from you.', cta: 'Build Something Great' },
-  { id: 'games', c: YELLOW, ic: '🎮', title: 'Game Design & Development', tag: "Have an Idea for a Game? Let's Bring It to Life.",
-    body: ['From an exciting concept to a game people can actually download and play, we handle the journey from start to finish.'],
+    get: 'Fast, easy-to-use experiences that turn visitors into buyers.', cta: 'Build Something Great' },
+  { id: 'games', c: YELLOW, Icon: Gamepad2, title: 'Game Design & Development', tag: "Have an Idea for a Game? Let's Bring It to Life.",
+    body: ['From concept to a game people can download and play, we handle it end to end.'],
     list: ['2D & 3D games', 'AR/VR experiences', 'Multiplayer games', 'Cross-platform games', 'Game monetization', 'Analytics'],
-    get: 'A complete game development experience with creativity, technology and business goals working together.', cta: "Let's Create a Game" },
-  { id: 'ai', c: BLUE, ic: '🤖', title: 'AI Automation & AI Agents', tag: 'Let Technology Do the Repetitive Work.',
-    body: ['Still spending hours copying information, sending repetitive messages or jumping between different tools?', "Let's automate it. We create AI agents and smart automations that connect the tools your business already uses.", 'Using technologies such as n8n, Make, Zapier, OpenAI and Claude, we can help automate repetitive workflows and reduce unnecessary manual work.'],
+    get: 'Creativity, technology and business goals working together.', cta: "Let's Create a Game" },
+  { id: 'ai', c: '#009edb', Icon: Bot, title: 'AI Automation & AI Agents', tag: 'Let Technology Do the Repetitive Work.',
+    body: ['We build AI agents and automations that connect the tools you already use.'],
     list: [],
-    get: 'Less repetitive work, smoother processes and more time for your team to focus on customers and growth.', cta: 'Automate My Business' },
+    get: 'Less repetitive work, more time for customers and growth.', cta: 'Automate My Business' },
 ]
 
 const activations = [
-  ['🛍', 'Shopper Enhancements', 'Make the shopping experience more engaging and memorable.'],
-  ['🏪', 'Speciality & Free-Standing Displays', "Put your product where people can't miss it."],
-  ['🛒', 'Shelf Branding', 'Turn ordinary shelves into attention-grabbing brand spaces.'],
-  ['🎯', 'Mall & Brand Activations', 'Take your campaign into the real world and create experiences people want to talk about.'],
-  ['🥤', 'Tasting & Sampling', 'Let customers experience your product before they buy it.'],
-  ['📍', 'Outdoor Advertising & Signage', 'Put your brand where your audience actually is.'],
+  { title: 'Shopper Enhancements', desc: 'Make the shopping experience more engaging and memorable.', image: '/activation/shopper.jpg', color: BLUE },
+  { title: 'Speciality & Free-Standing Displays', desc: "Put your product where people can't miss it.", image: '/activation/displays.jpg', color: CORAL },
+  { title: 'Shelf Branding', desc: 'Turn ordinary shelves into attention-grabbing brand spaces.', image: '/activation/shelf.jpg', color: GREEN },
+  { title: 'Mall & Brand Activations', desc: 'Take your campaign into the real world and create experiences people want to talk about.', image: '/activation/mall.jpg', color: '#009edb' },
+  { title: 'Tasting & Sampling', desc: 'Let customers experience your product before they buy it.', image: '/activation/tasting.jpg', color: YELLOW },
+  { title: 'Outdoor Advertising & Signage', desc: 'Put your brand where your audience actually is.', image: '/activation/outdoor.jpg', color: CORAL },
 ]
 
 const industries = [
-  ['🍔', 'Food & Beverage', 'Make people stop scrolling, start craving and walk through your doors.'],
-  ['🛍', 'Retail & E-Commerce', 'Turn product discovery into clicks, carts and purchases.'],
-  ['📱', 'Consumer Electronics', 'Make product benefits easy to understand and exciting to explore.'],
-  ['👗', 'Fashion & Lifestyle', 'Create a recognizable visual identity and a social presence people want to follow.'],
-  ['🏨', 'Hospitality', 'Turn your location, atmosphere and experience into content that makes people want to visit.'],
-  ['🏢', 'Business & Professional Services', 'Explain what you do in a simple, compelling way — and give potential customers a reason to choose you.'],
+  { title: 'Food & Beverage', desc: 'Make people stop scrolling, start craving and walk through your doors.', image: '/industries/food.jpg', color: CORAL },
+  { title: 'Retail & E-Commerce', desc: 'Turn product discovery into clicks, carts and purchases.', image: '/industries/retail.jpg', color: BLUE },
+  { title: 'Consumer Electronics', desc: 'Make product benefits easy to understand and exciting to explore.', image: '/industries/electronics.jpg', color: '#009edb' },
+  { title: 'Fashion & Lifestyle', desc: 'Create a recognizable visual identity and a social presence people want to follow.', image: '/industries/fashion.jpg', color: GREEN },
+  { title: 'Hospitality', desc: 'Turn your location, atmosphere and experience into content that makes people want to visit.', image: '/industries/hospitality.jpg', color: YELLOW },
+  { title: 'Business & Professional Services', desc: 'Explain what you do in a simple, compelling way — and give potential customers a reason to choose you.', image: '/industries/business.jpg', color: BLUE },
+]
+
+const footerColumns = [
+  { title: 'Explore', links: [
+    { label: 'About Us', href: '#about' },
+    { label: 'Services', href: '#services' },
+    { label: 'Brand Activation', href: '#activation' },
+    { label: 'Industries', href: '#industries' },
+    { label: 'Our Process', href: '#process' },
+    { label: 'FAQ', href: '#faq' },
+  ] },
+  { title: 'Services', links: [
+    { label: 'Digital Marketing & SEO', href: '#services' },
+    { label: 'Branding & Design', href: '#services' },
+    { label: 'Websites & E-Commerce', href: '#services' },
+    { label: 'Game Development', href: '#services' },
+    { label: 'AI Automation', href: '#services' },
+  ] },
+]
+
+const ctaWords = [
+  { text: 'Digital Marketing', color: BLUE },
+  { text: 'Branding & Design', color: CORAL },
+  { text: 'Websites & E-Commerce', color: GREEN },
+  { text: 'Brand Activation', color: '#009edb' },
+  { text: 'Game Development', color: YELLOW },
+  { text: 'AI Automation', color: BLUE },
 ]
 
 const why = [
-  ['🎯', 'Clear Direction', "Know what we're doing and, more importantly, why we're doing it."],
-  ['💡', 'Ideas Built Around Your Business', "No cookie-cutter campaigns copied from someone else's playbook."],
-  ['📣', 'Consistent Brand Communication', 'Your website, social media, advertising and physical presence all feel like the same brand.'],
-  ['📊', 'Marketing With Purpose', 'We focus on the actions that matter to your business — leads, enquiries, sales, bookings and growth.'],
-  ['🤝', 'Clear Communication', "You'll know what's happening, what's next and when you can expect it."],
-  ['✅', 'Quality Before Delivery', 'Everything gets reviewed before it reaches your customers.'],
-  ['🚀', 'From Idea to Execution', 'Strategy is great. Ideas are great. But we also make sure things actually get done.'],
+  { title: 'Clear Direction', desc: "Know what we're doing and, more importantly, why we're doing it.", image: '/why/direction.jpg', color: '#35b8f0' },
+  { title: 'Ideas Built Around Your Business', desc: "No cookie-cutter campaigns copied from someone else's playbook.", image: '/why/ideas.jpg', color: '#ff8b7e' },
+  { title: 'Consistent Brand Communication', desc: 'Your website, social media, advertising and physical presence all feel like the same brand.', image: '/why/brand.jpg', color: '#62b65d' },
+  { title: 'Marketing With Purpose', desc: 'We focus on the actions that matter to your business — leads, enquiries, sales, bookings and growth.', image: '/why/purpose.jpg', color: '#e9e76a' },
+  { title: 'Clear Communication', desc: "You'll know what's happening, what's next and when you can expect it.", image: '/why/communication.jpg', color: '#35b8f0' },
+  { title: 'Quality Before Delivery', desc: 'Everything gets reviewed before it reaches your customers.', image: '/why/quality.jpg', color: '#62b65d' },
+  { title: 'From Idea to Execution', desc: 'Strategy is great. Ideas are great. But we also make sure things actually get done.', image: '/why/execution.jpg', color: '#ff8b7e' },
 ]
 
 const steps = [
-  ['Tell Us What You Need', "We'll learn about your business, audience, goals and what's currently driving you crazy."],
-  ['We Build the Plan', "You'll receive a clear scope, timeline and pricing — so you know exactly what you're getting."],
-  ["Let's Get Creative", 'Our team develops the strategy, concepts, designs and content needed to bring your idea to life.'],
-  ['You Stay in the Loop', 'We share progress, collect your feedback and keep everything moving without the endless back-and-forth.'],
-  ['Launch Time!', 'Your campaign, website, content or activation goes live.'],
-  ['Keep Growing', "We look at what's working, what isn't and where we can improve the next move."],
+  { title: 'Tell Us What You Need', desc: "We'll learn about your business, audience, goals and what's currently driving you crazy.", Icon: MessagesSquare, color: BLUE },
+  { title: 'We Build the Plan', desc: "You'll receive a clear scope, timeline and pricing — so you know exactly what you're getting.", Icon: ClipboardList, color: GREEN },
+  { title: "Let's Get Creative", desc: 'Our team develops the strategy, concepts, designs and content needed to bring your idea to life.', Icon: Lightbulb, color: CORAL },
+  { title: 'You Stay in the Loop', desc: 'We share progress, collect your feedback and keep everything moving without the endless back-and-forth.', Icon: RefreshCw, color: YELLOW },
+  { title: 'Launch Time!', desc: 'Your campaign, website, content or activation goes live.', Icon: Rocket, color: '#009edb' },
+  { title: 'Keep Growing', desc: "We look at what's working, what isn't and where we can improve the next move.", Icon: TrendingUp, color: BLUE },
 ]
-const stepColors = [BLUE, GREEN, CORAL, YELLOW, BLUE, GREEN]
 
-const clients = ['Switzella', 'Coco Dazzle', 'Noor Jewellers', '9Round Kickboxing Fitness', 'Legacy Fitness', 'Sizzler', 'Artistic Haul', 'Xperience Realty', 'Factory Cafe', "Burger O'Clock", 'Decent Interiors', 'Marsons Group']
+const clients = [
+  { name: 'Shell', logo: 'shell' },
+  { name: 'Mayar', logo: 'mayar' },
+  { name: 'Aujan Coca-Cola', logo: 'aujan-coca-cola' },
+  { name: 'Michelin', logo: 'michelin' },
+  { name: 'Castrol', logo: 'castrol' },
+  { name: 'Gento', logo: 'gento' },
+  { name: 'Moulinex', logo: 'moulinex' },
+  { name: 'Abbott', logo: 'abbott' },
+  { name: 'Afia', logo: 'afia' },
+  { name: 'Noor', logo: 'noor' },
+  { name: 'Abdul Latif Jameel', logo: 'abdul-latif-jameel' },
+  { name: 'Sunbulah Food Services', logo: 'sunbulah' },
+  { name: 'Keeta Keemart', logo: 'keeta-keemart' },
+  { name: 'Alcatel onetouch', logo: 'alcatel-onetouch' },
+]
 
 const faqs = [
   ['What does Creative Hands Marketing Services do?', "Creative Hands is a full-service marketing agency in Jeddah, Saudi Arabia. We offer digital marketing, SEO, social media, content creation, branding, design, media production, brand activation, website development, e-commerce, mobile apps, game development and AI automation."],
@@ -87,101 +141,182 @@ const fade = {
 }
 const stagger = (i) => ({ ...fade, transition: { ...fade.transition, delay: (i % 3) * 0.08 } })
 
+const pillars = [
+  { Icon: Compass, title: 'Strategy', desc: "Know who you're talking to, what to say and where to say it.", color: BLUE },
+  { Icon: Lightbulb, title: 'Creativity', desc: 'Look different, sound different and give people a reason to remember you.', color: CORAL, highlight: true },
+  { Icon: Rocket, title: 'Execution', desc: 'Turn ideas into campaigns, content, websites and real-world experiences that actually get launched.', color: GREEN },
+]
+
+const glow = (rgb) => `radial-gradient(circle, rgba(${rgb},0.34) 0%, rgba(${rgb},0.14) 50%, rgba(${rgb},0) 100%)`
+const menuItems = [
+  { label: 'About', href: '#about', color: BLUE, gradient: glow('38,77,148') },
+  { label: 'Services', href: '#services', color: GREEN, gradient: glow('98,182,93') },
+  { label: 'Activation', href: '#activation', color: CORAL, gradient: glow('224,95,82') },
+  { label: 'Process', href: '#process', color: YELLOW, gradient: glow('216,214,82') },
+  { label: 'FAQ', href: '#faq', color: BLUE, gradient: glow('38,77,148') },
+]
+
 export default function App() {
+  const [active, setActive] = useState('')
+  const [navHot, setNavHot] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [spot, setSpot] = useState(null)
+
+  useEffect(() => {
+    const onKey = (e) => e.key === 'Escape' && setMenuOpen(false)
+    const onResize = () => window.innerWidth > 900 && setMenuOpen(false)
+    window.addEventListener('keydown', onKey)
+    window.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('resize', onResize)
+    }
+  }, [])
+
+  useEffect(() => {
+    const targets = menuItems.map((m) => document.querySelector(m.href))
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive(menuItems.find((m) => m.href === `#${e.target.id}`)?.label ?? '')
+        })
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    )
+    targets.forEach((t) => t && io.observe(t))
+    return () => io.disconnect()
+  }, [])
+
   return (
     <>
-      <header className="nav">
+      <header className={`nav${menuOpen ? ' is-open' : ''}`} onMouseEnter={() => setNavHot(true)} onMouseLeave={() => { setNavHot(false); setSpot(null) }}>
+        <div className="nav__fx" aria-hidden="true">
+          <motion.div className="nav__aura" initial={false} animate={{ opacity: navHot || menuOpen ? 1 : 0 }} transition={{ duration: 0.5 }} />
+          <motion.div
+            className="nav__spot"
+            initial={false}
+            animate={{ opacity: spot ? 1 : 0, x: spot ? spot.x - 300 : 0 }}
+            transition={{ opacity: { duration: 0.4 }, x: { type: 'spring', stiffness: 160, damping: 22 } }}
+            style={{ background: spot ? spot.gradient : 'none' }}
+          />
+        </div>
         <div className="wrap">
-          <a href="#top" className="brand">
-            <img src="/logo.png" alt="" />
+          <a href="#top" className="brand" onClick={() => setMenuOpen(false)}>
+            <motion.img src="/logo.png" alt="" whileHover={{ rotate: -10, scale: 1.12 }} transition={{ type: 'spring', stiffness: 300, damping: 14 }} />
             <span><b>CREATIVE HANDS</b><small>MARKETING SERVICES</small></span>
           </a>
-          <nav><ul>
-            <li><a href="#about">About</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#activation">Activation</a></li>
-            <li><a href="#process">Process</a></li>
-            <li><a href="#faq">FAQ</a></li>
-          </ul></nav>
-          <a href="#contact" className="btn primary">Start Your Project</a>
+          <GlowMenu
+            items={menuItems}
+            activeItem={active}
+            onItemClick={setActive}
+            onItemHover={(item, r) => setSpot(item ? { x: r.left + r.width / 2, gradient: item.gradient } : null)}
+            className="nav-menu"
+          />
+          <motion.a href="#contact" className="btn primary nav-cta" whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.97 }}>Get a Quote Today!</motion.a>
+          <button
+            type="button"
+            className="nav-burger"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
+            onClick={() => setMenuOpen((o) => !o)}
+          >
+            <span /><span /><span />
+          </button>
         </div>
+
+        <nav id="mobile-menu" className="nav-panel" aria-label="Mobile">
+          <ul>
+            {menuItems.map((m) => (
+              <li key={m.label}>
+                <a
+                  href={m.href}
+                  className={active === m.label ? 'is-active' : ''}
+                  style={{ '--c': m.color }}
+                  onClick={() => { setActive(m.label); setMenuOpen(false) }}
+                >
+                  {m.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <a href="#contact" className="btn primary nav-panel__cta" onClick={() => setMenuOpen(false)}>Get a Quote Today!</a>
+        </nav>
       </header>
 
       <main id="top">
         <section className="hero">
-          <div className="wrap">
-            <motion.div {...fade}>
-              <p className="eyebrow">Digital Marketing &amp; Brand Activation Agency in Jeddah, Saudi Arabia</p>
-              <h1>Your Brand Deserves More Than Just Attention. <span className="accent">It Deserves to Be Remembered.</span></h1>
-              <p className="lead"><b>Got a great product but struggling to get people to notice it?</b> Launching a new business? Looking for more customers? Ready to give your brand a fresh look?</p>
-              <p className="lead">Creative Hands Marketing Services helps businesses across Saudi Arabia turn ideas into brands people notice, trust and remember. From digital marketing and SEO to branding, content, technology and in-store brand activation, we bring everything together to help you attract the right audience and turn attention into action.</p>
+          <BeamsBackground className="hero__gl" />
+          <div className="hero__shade" />
+          <div className="wrap hero__inner">
+            <motion.div className="hero__content" {...fade}>
+              <span className="hero__badge">
+                <img src="/logo.png" alt="" />
+                Digital Marketing &amp; Brand Activation Agency in Jeddah, Saudi Arabia
+              </span>
+              <h1>
+                Your <span className="hw-yellow">Brand</span> Deserves More Than Just <span className="hw-coral">Attention.</span>
+                <span className="hw-grad">It Deserves to Be Remembered.</span>
+              </h1>
+              <p className="hero__lead"><b>Got a great product but struggling to get people to notice it?</b> Launching a new business? Looking for more customers? Ready to give your brand a fresh look?</p>
+              <p className="hero__lead">Creative Hands Marketing Services helps businesses across Saudi Arabia turn ideas into brands people notice, trust and remember. From digital marketing and SEO to branding, content, technology and in-store brand activation, we bring everything together to help you attract the right audience and turn attention into action.</p>
               <div className="cta">
-                <a href="#contact" className="btn primary">Let’s Build Your Brand</a>
-                <a href="#clients" className="btn ghost">Explore Our Work</a>
+                <a href="#contact" className="btn light hero__btn">Let’s Build Your Brand</a>
+                <a href="#clients" className="btn glass hero__btn">Explore Our Work</a>
               </div>
               <p className="arabic" lang="ar" dir="rtl">اليد المبدعة للخدمات التسويقية</p>
-            </motion.div>
-            <motion.div className="hero-art" initial={{ opacity: 0, scale: .9, rotate: -6 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ duration: .8, ease: 'easeOut' }}>
-              <motion.img src="/logo.png" alt="Creative Hands puzzle logo" animate={{ y: [0, -10, 0] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }} style={{ borderRadius: 40 }} />
             </motion.div>
           </div>
         </section>
 
-        <section id="about">
-          <div className="wrap">
+        <section id="about" className="about">
+          <div className="about__pattern" />
+          <div className="about__glow" />
+          <div className="wrap about__inner">
             <motion.div {...fade}>
               <p className="eyebrow">About Us</p>
-              <h2>We Don't Just Market Your Business. <span className="accent">We Help People Choose It.</span></h2>
+              <h2>We Don't Just Market Your Business.<br /><span className="accent">We Help People Choose It.</span></h2>
               <p className="lead">Let's face it — your customers have endless options. So why should they choose you? That's where we come in.</p>
-              <p className="lead" style={{ marginTop: 14 }}>Creative Hands is a full-service marketing agency based in Jeddah, Saudi Arabia. We help businesses build stronger brands, reach the right people and create experiences that turn curious visitors into customers.</p>
+              <p className="lead">Creative Hands is a full-service marketing agency based in Jeddah, Saudi Arabia. We help businesses build stronger brands, reach the right people and create experiences that turn curious visitors into customers.</p>
             </motion.div>
             <div className="pillars">
-              {[['🧠', 'Strategy', 'Know who you\'re talking to, what to say and where to say it.'], ['🎨', 'Creativity', 'Look different, sound different and give people a reason to remember you.'], ['🚀', 'Execution', 'Turn ideas into campaigns, content, websites and real-world experiences that actually get launched.']].map(([ic, t, d], i) => (
-                <motion.div className="pillar" key={t} {...stagger(i)}><div className="ic">{ic}</div><h3>{t}</h3><p>{d}</p></motion.div>
+              {pillars.map(({ Icon, title, desc, color, highlight }, i) => (
+                <motion.div className={`pillar${highlight ? ' pillar--hl' : ''}`} key={title} style={{ '--c': color }} {...stagger(i)}>
+                  <div className="pillar__icon"><Icon size={24} strokeWidth={2.2} /></div>
+                  <h3>{title}</h3>
+                  <p>{desc}</p>
+                </motion.div>
               ))}
             </div>
-            <p className="result">The result? A brand that's easier to discover, easier to understand and much harder to forget.</p>
+            <motion.p className="result" {...fade}><b>The result?</b> A brand that's easier to discover, easier to understand and much harder to forget.</motion.p>
           </div>
         </section>
 
         <section id="services" className="services">
           <div className="wrap">
-            <motion.div className="center" {...fade}>
+            <motion.div className="svc-head" {...fade}>
               <p className="eyebrow">Services</p>
               <h2>Everything You Need to Get Noticed, Get Chosen &amp; Grow.</h2>
-              <p className="lead">You shouldn't have to work with five different companies to build one great brand. Creative Hands brings marketing, creativity and technology together under one roof.</p>
+              <p className="lead">One team for marketing, creativity and technology — no need to juggle five agencies.</p>
             </motion.div>
-            <div className="svc-grid">
-              {services.map((s, i) => (
-                <motion.article key={s.id} className="card" style={{ '--c': s.c }} {...stagger(i)}>
-                  <div className="ic">{s.ic}</div>
-                  <h3>{s.title}</h3>
-                  <div className="tag">{s.tag}</div>
-                  {s.body.map((b) => <p key={b}>{b}</p>)}
-                  {s.list.length > 0 && <ul>{s.list.map((l) => <li key={l}>{l}</li>)}</ul>}
-                  <p className="get"><b>What you get:</b> {s.get}</p>
-                  <a href="#contact" className="link">{s.cta} →</a>
-                </motion.article>
-              ))}
-            </div>
+            <ServiceCarousel services={services} />
           </div>
         </section>
 
         <section id="activation" className="activation">
-          <div className="wrap">
-            <motion.div {...fade}>
+          <div className="about__pattern" />
+          <div className="about__glow" />
+          <div className="wrap activation__inner">
+            <motion.div className="activation__text" {...fade}>
               <p className="eyebrow">Brand &amp; Shopper Activation</p>
-              <h2>Your Customers Aren't Only Online.</h2>
-              <div className="journey"><span>Discover on Instagram</span><span>→ See it on a shelf</span><span>→ Experience it in store</span><span>→ Decide to buy</span></div>
+              <h2>Your Customers Aren't <span className="accent">Only Online.</span></h2>
               <p className="lead">Every one of those moments matters. Our brand activation services help your business create memorable physical experiences where customers are already making buying decisions.</p>
+              <p className="goal"><b>The goal?</b> More attention at the moment it matters — when customers are deciding what to buy.</p>
+              <a href="#contact" className="btn primary">Plan My Brand Activation</a>
             </motion.div>
-            <div className="act-grid">
-              {activations.map(([ic, t, d], i) => (
-                <motion.div className="act" key={t} {...stagger(i)}><div className="ic">{ic}</div><h3>{t}</h3><p>{d}</p></motion.div>
-              ))}
-            </div>
-            <p className="goal"><b>The goal?</b> More attention at the moment it matters — when customers are deciding what to buy.</p>
-            <a href="#contact" className="btn light">Plan My Brand Activation →</a>
+            <motion.div className="activation__acc" {...fade}>
+              <ActivationAccordion items={activations} />
+            </motion.div>
           </div>
         </section>
 
@@ -192,11 +327,7 @@ export default function App() {
               <h2>Your Customers Are Different. Your Marketing Should Be Too.</h2>
               <p className="lead">A restaurant doesn't sell like a real estate company. A fashion brand doesn't communicate like a tech company. That's why we build campaigns around your audience, your product and the moment they make a buying decision.</p>
             </motion.div>
-            <div className="ind-grid">
-              {industries.map(([ic, t, d], i) => (
-                <motion.div className="ind" key={t} {...stagger(i)}><div className="ic">{ic}</div><h3>{t}</h3><p>{d}</p></motion.div>
-              ))}
-            </div>
+            <IndustryTimeline items={industries} />
           </div>
         </section>
 
@@ -207,11 +338,7 @@ export default function App() {
               <h2>Because You Don't Need "More Marketing." You Need Marketing That Makes Sense.</h2>
               <p className="lead">You don't need endless meetings. You don't need complicated marketing jargon. And you definitely don't need to wonder what your agency is doing with your budget. You need a team that understands your business, your audience and your goals.</p>
             </motion.div>
-            <div className="why-grid">
-              {why.map(([ic, t, d], i) => (
-                <motion.div className="why-item" key={t} {...stagger(i)}><div className="ic">{ic}</div><h3>{t}</h3><p>{d}</p></motion.div>
-              ))}
-            </div>
+            <WhyList items={why} />
           </div>
         </section>
 
@@ -222,27 +349,44 @@ export default function App() {
               <h2>From "I Have an Idea" to "Look What We Built!"</h2>
               <p className="lead">Getting started shouldn't feel complicated.</p>
             </motion.div>
-            <div className="steps">
-              {steps.map(([t, d], i) => (
-                <motion.div className="step" key={t} style={{ '--c': stepColors[i] }} {...stagger(i)}>
-                  <div className="n">0{i + 1}</div><h3>{t}</h3><p>{d}</p>
-                </motion.div>
-              ))}
-            </div>
-            <p className="tagline center">Simple. Clear. No disappearing acts.</p>
+            <ProcessScroll steps={steps} />
           </div>
         </section>
 
         <section id="clients" className="clients">
-          <div className="wrap center">
+          <div className="about__pattern" />
+          <div className="about__glow" />
+          <div className="wrap clients__inner">
             <motion.div {...fade}>
-              <p className="eyebrow">Clients</p>
-              <h2>We've Helped Brands Get Noticed.</h2>
-              <p className="lead">From food and fitness to retail, real estate, hospitality and lifestyle, we've had the opportunity to work with brands across different industries.</p>
+              <ClientMarquee
+                title="We've Helped Brands Get Noticed."
+                description="From food and fitness to retail, real estate, hospitality and lifestyle, we've had the opportunity to work with brands across different industries."
+                logos={clients.map((c) => ({ name: c.name, src: `/clients/${c.logo}.png` }))}
+              />
+              <div className="clients__cta">
+                <a href="#contact" className="btn primary">Ready to see what we could do for your brand?</a>
+              </div>
             </motion.div>
-            <div className="logos">{clients.map((c) => <span key={c}>{c}</span>)}<span>…and more</span></div>
-            <p className="lead" style={{ marginBottom: 24 }}>Ready to see what we could do for your brand?</p>
-            <a href="#contact" className="btn primary">View Our Work →</a>
+          </div>
+        </section>
+
+        <section id="contact" className="final">
+          <div className="about__pattern" />
+          <div className="about__glow" />
+          <div className="wrap final__grid">
+            <motion.div className="final__text" {...fade}>
+              <h2>Ready to Make Your Brand <span className="accent">Stand Out?</span></h2>
+              <p className="final__maybes">Maybe you need more customers. Maybe your brand needs a makeover. Maybe your website isn't doing enough. Maybe you've got a campaign idea and just need the right team to make it happen.</p>
+              <p className="final__lead">Whatever you're working on, let's turn the idea into something people notice.</p>
+              <strong className="final__strong">Your next customer is out there. Let's help them find you.</strong>
+              <div className="final__btns">
+                <a href="#contact" className="btn primary">Book a Discovery Call</a>
+                <a href="#contact" className="btn ghost">Start Your Project</a>
+              </div>
+            </motion.div>
+            <motion.div className="final__marquee" {...fade}>
+              <CtaMarquee items={ctaWords} />
+            </motion.div>
           </div>
         </section>
 
@@ -257,34 +401,19 @@ export default function App() {
                 <details key={q}><summary>{q}</summary><p>{a}</p></details>
               ))}
             </div>
-            <div className="center"><a href="#contact" className="btn primary">Start Your Project →</a></div>
-          </div>
-        </section>
-
-        <section id="contact" className="final">
-          <div className="wrap">
-            <motion.div {...fade}>
-              <h2>Ready to Make Your Brand Stand Out?</h2>
-              <p className="maybes">Maybe you need more customers. Maybe your brand needs a makeover.<br />Maybe your website isn't doing enough. Maybe you've got a campaign idea and just need the right team to make it happen.</p>
-              <p className="lead">Whatever you're working on, let's turn the idea into something people notice.</p>
-              <strong>Your next customer is out there. Let's help them find you.</strong>
-              <div className="cta">
-                <a href="#contact" className="btn light">Book a Discovery Call</a>
-                <a href="#contact" className="btn outline-light">Start Your Project</a>
-              </div>
-              <div className="contact">
-                <span>📍 Jeddah, Saudi Arabia</span><span>📞 [Phone]</span><span>✉️ [Email]</span><span>🌐 [Website]</span>
-              </div>
-            </motion.div>
           </div>
         </section>
       </main>
 
       <div className="bar"><i style={{ background: BLUE }} /><i style={{ background: GREEN }} /><i style={{ background: CORAL }} /><i style={{ background: '#d8d652' }} /></div>
-      <footer>
-        <b>Creative Hands Marketing Services</b>
-        Strategy. Creativity. Execution. All in one place.
-      </footer>
+      <FooterHover
+        logo="/logo.png"
+        brandName="Creative Hands Marketing Services"
+        arabicName="اليد المبدعة للخدمات التسويقية"
+        tagline="Strategy. Creativity. Execution. All in one place."
+        location="Jeddah, Saudi Arabia"
+        columns={footerColumns}
+      />
     </>
   )
 }
